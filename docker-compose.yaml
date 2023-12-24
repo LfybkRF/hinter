@@ -1,0 +1,60 @@
+version: "2.15.1"
+services:
+  database:
+    image: postgres:15.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=170305
+    ports:
+      - 5432:5432
+    volumes:
+      - elof_database:/var/lib/postgresql/data
+    networks:
+      nw:
+        aliases:
+          - database
+  nats:
+    image: nats-streaming:0.25.6-alpine
+    ports:
+      - 4222:4222
+
+    networks:
+      share:
+      nw:
+        aliases:
+          - nats
+  crud:
+    build: ./crud_ms/
+    ports:
+      - "3001:3001"
+    command: go run ./main/main.go
+    depends_on:
+      - database
+      - nats
+    networks:
+      share:
+      nw:
+        aliases:
+          - gateway
+  gateway:
+    build: ./gateway_ms/
+    ports:
+      - "3002:3002"
+    command: go run ./main/main.go
+    depends_on:
+      - crud
+    networks:
+      share:
+      nw:
+        aliases:
+          - gateway
+    
+networks:
+  nw:
+  share:
+    driver:
+      bridge
+
+volumes:
+  elof_database:
