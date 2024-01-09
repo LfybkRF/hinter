@@ -3,7 +3,7 @@ package server
 import (
 	"encoding/json"
 	"fmt"
-	"gateway_l0_ms/internal/dao"
+	"l0_ms/internal/dao"
 	"log"
 	"net/http"
 )

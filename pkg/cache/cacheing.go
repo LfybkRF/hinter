@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"gateway_l0_ms/internal/models"
+	"l0_ms/internal/models"
 	"fmt"
 	"log"
 	"errors"

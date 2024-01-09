@@ -18,32 +18,22 @@ services:
     image: nats-streaming:0.25.6-alpine
     ports:
       - 4222:4222
-
+    restart: always
+    command: "--cluster_id NATS"
+    
     networks:
       share:
       nw:
         aliases:
           - nats
-  crud:
-    build: ./crud_ms/
+  service:
+    build: ./
     ports:
       - "3001:3001"
-    command: go run ./main/main.go
+    command: go run ./cmd/main.go
     depends_on:
-      - database
       - nats
-    networks:
-      share:
-      nw:
-        aliases:
-          - gateway
-  gateway:
-    build: ./gateway_ms/
-    ports:
-      - "3002:3002"
-    command: go run ./main/main.go
-    depends_on:
-      - crud
+      - database
     networks:
       share:
       nw:
