@@ -3,7 +3,7 @@ package dao
 import (
 	"l0_ms/internal/models"
 	"l0_ms/internal/repository"
-	"l0_ms/pkg/cache"
+	"l0_ms/internal/cache"
 	"fmt"
 	"log"
 	"encoding/json"
