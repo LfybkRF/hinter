@@ -3,14 +3,13 @@ package config
 import (
 	"fmt"
 	"l0_ms/internal/app/server"
-
 	"os"
 	"gopkg.in/yaml.v3"
 )
 
 type Config struct {
 	Database      DatabaseConfig      `yaml:"database"`
-	Http          server.Config         `yaml:"http"`
+	Server          server.Config         `yaml:"server"`
 	NatsStreaming NatsStreamingConfig `yaml:"nats_streaming"`
 }
 
