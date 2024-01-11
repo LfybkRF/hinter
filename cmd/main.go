@@ -6,13 +6,12 @@ import (
 	"l0_ms/internal/dao"
 	"l0_ms/internal/service"
 	"log"
-	"os"
 )
 
 
 func main() {
 
-	configPath := os.Getenv("CONFIG_PATH")
+	configPath := "./config/config.yaml"
 
 	configure, err := config.NewConfig(configPath)
 	if err != nil {

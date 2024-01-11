@@ -38,7 +38,7 @@ services:
       share:
       nw:
         aliases:
-          - gateway
+          - web-server
     
 networks:
   nw:

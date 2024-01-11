@@ -1,58 +1,95 @@
 package models
 
-import "time"
-
+import (
+	"database/sql/driver"
+	"encoding/json"
+	"time"
+)
 
 type Order struct {
-	OrderUID          string    `json:"order_uid" validate:"required"`
-	TrackNumber       string    `json:"track_number" validate:"required"`
-	Entry             string    `json:"entry" validate:"required"`
-	Delivery          Delivery  `json:"delivery" validate:"required"`
-	Payment           Payment   `json:"payment" validate:"required"`
-	Items             []Item    `json:"items" validate:"required"`
-	Locale            string    `json:"locale" validate:"required"`
+	OrderUID          string    `json:"order_uid" gorm:"primaryKey"`
+	TrackNumber       string    `json:"track_number"`
+	Entry             string    `json:"entry"`
+	Delivery          Delivery  `json:"delivery" serializer:"json"`
+	Payment           Payment   `json:"payment" serializer:"json"`
+	Items             Items     `json:"items" serializer:"json"`
+	Locale            string    `json:"locale"`
 	InternalSignature string    `json:"internal_signature"`
-	CustomerID        string    `json:"customer_id" validate:"required"`
-	DeliveryService   string    `json:"delivery_service" validate:"required"`
-	ShardKey          string    `json:"shardkey" validate:"required"`
-	SmID              int       `json:"sm_id" validate:"required"`
-	DateCreated       time.Time `json:"date_created" validate:"required"`
-	OofShard          string    `json:"oof_shard" validate:"required"`
+	CustomerID        string    `json:"customer_id"`
+	DeliveryService   string    `json:"delivery_service"`
+	Shardkey          string    `json:"shardkey"`
+	SmID              int       `json:"sm_id"`
+	DateCreated       time.Time `json:"date_created"`
+	OofShard          string    `json:"oof_shard"`
 }
 
 type Delivery struct {
-	Name    string `json:"name" validate:"required"`
-	Phone   string `json:"phone" validate:"required"`
-	Zip     string `json:"zip" validate:"required"`
-	City    string `json:"city" validate:"required"`
-	Address string `json:"address" validate:"required"`
-	Region  string `json:"region" validate:"required"`
-	Email   string `json:"email" validate:"required"`
+	Name    string `json:"name"`
+	Phone   string `json:"phone"`
+	Zip     string `json:"zip"`
+	City    string `json:"city"`
+	Address string `json:"address"`
+	Region  string `json:"region"`
+	Email   string `json:"email"`
+}
+
+func (d *Delivery) Scan(value interface{}) error {
+	return json.Unmarshal(value.([]byte), &d)
+}
+
+func (d Delivery) Value() (driver.Value, error) {
+	return json.Marshal(d)
 }
 
 type Payment struct {
-	Transaction  string `json:"transaction" validate:"required"`
+	Transaction  string `json:"transaction"`
 	RequestID    string `json:"request_id"`
-	Currency     string `json:"currency" validate:"required"`
-	Provider     string `json:"provider" validate:"required"`
-	Amount       int    `json:"amount" validate:"required"`
-	PaymentDt    int    `json:"payment_dt" validate:"required"`
-	Bank         string `json:"bank" validate:"required"`
-	DeliveryCost int    `json:"delivery_cost" validate:"required"`
-	GoodsTotal   int    `json:"goods_total" validate:"required"`
+	Currency     string `json:"currency"`
+	Provider     string `json:"provider"`
+	Amount       int    `json:"amount"`
+	PaymentDT    int    `json:"payment_dt"`
+	Bank         string `json:"bank"`
+	DeliveryCost int    `json:"delivery_cost"`
+	GoodsTotal   int    `json:"goods_total"`
 	CustomFee    int    `json:"custom_fee"`
 }
 
+func (p *Payment) Scan(value interface{}) error {
+	return json.Unmarshal(value.([]byte), &p)
+}
+
+func (p Payment) Value() (driver.Value, error) {
+	return json.Marshal(p)
+}
+
 type Item struct {
-	ChrtID      int    `json:"chrt_id" validate:"required"`
-	TrackNumber string `json:"track_number" validate:"required"`
-	Price       int    `json:"price" validate:"required"`
-	RID         string `json:"rid" validate:"required"`
-	Name        string `json:"name" validate:"required"`
-	Sale        int    `json:"sale" validate:"required"`
-	Size        string `json:"size" validate:"required"`
-	TotalPrice  int    `json:"total_price" validate:"required"`
-	NmID        int    `json:"nm_id" validate:"required"`
-	Brand       string `json:"brand" validate:"required"`
-	Status      int    `json:"status" validate:"required"`
+	ChrtID      int    `json:"chrt_id"`
+	TrackNumber string `json:"track_number"`
+	Price       int    `json:"price"`
+	RID         string `json:"rid"`
+	Name        string `json:"name"`
+	Sale        int    `json:"sale"`
+	Size        string `json:"size"`
+	TotalPrice  int    `json:"total_price"`
+	NmID        int    `json:"nm_id"`
+	Brand       string `json:"brand"`
+	Status      int    `json:"status"`
+}
+
+func (i *Item) Scan(value interface{}) error {
+	return json.Unmarshal(value.([]byte), &i)
+}
+
+func (i Item) Value() (driver.Value, error) {
+	return json.Marshal(i)
+}
+
+type Items []Item
+
+func (i *Items) Scan(value interface{}) error {
+	return json.Unmarshal(value.([]byte), &i)
+}
+
+func (i Items) Value() (driver.Value, error) {
+	return json.Marshal(i)
 }

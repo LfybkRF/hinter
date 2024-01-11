@@ -9,9 +9,9 @@ import (
 
 
 type Subscriber struct {
-	natsClient stan.Conn
-	channel    string
-	client     *dao.Client
+	natsClient  stan.Conn
+	channel		string
+	client		*dao.Client
 }
 
 
