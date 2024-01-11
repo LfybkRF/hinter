@@ -9,6 +9,7 @@ import (
 	"os"
 	"strconv"
 	"time"
+	"math/rand"
 
 	"github.com/nats-io/stan.go"
 )
@@ -50,6 +51,13 @@ func (p *Publisher) NatsSteamingSubscribe() {
 		log.Fatalf("failed Unmarshal: %v", err)
 	}
 	for {
+		order.SmID = rand.Intn(1000 - 100) + 100
+		order.DateCreated = time.Now()
+		
+		// Генерируем трек номер из 12 символов для возможности генерировать штрих код
+		trackNumber := uint64(rand.Int63n(900_000_000_000)) + 100_000_000_000
+		order.TrackNumber = strconv.FormatUint(trackNumber, 10)
+
 		OrderUID := fmt.Sprintf("%s%stest", hex(order.SmID*23, false), hex(int(time.Now().Unix()), false))
 		order.OrderUID = OrderUID
 
